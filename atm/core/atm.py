@@ -62,6 +62,11 @@ class ATM:
         self.current_account = None
         self.current_user = None
 
+    def list_users(self):
+        print(f"User No - Name - Role")
+        for user_no, user in self.users.items():
+            print(f"{user_no} - {user.name} - {user.role}")
+
     def show_menu(self):
         while True:
             print("\n📋 Menu:")
@@ -72,7 +77,7 @@ class ATM:
             print("5. Logout")
             if self.current_user.is_admin():
                 print("6. Add User")
-                print("7. Remove User")
+                print("7. List Users")
 
             choice = input("👉 Enter choice (1-7): ")
 
@@ -93,6 +98,8 @@ class ATM:
                     break
                 elif choice == '6' and self.current_user.is_admin():
                     self.add_user_interactively()
+                elif choice == '7' and self.current_user.is_admin():
+                    self.list_users()
                 else:
                     print("❌ Invalid option.")
             except ValueError as e:
