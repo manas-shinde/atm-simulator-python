@@ -1,4 +1,4 @@
 __all__ = ["Account", "atm"]
 
-from atm.account import Account
-from atm.atm import ATM
+from atm.models.account import Account
+from atm.core.atm import ATM

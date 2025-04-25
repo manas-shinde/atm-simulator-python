@@ -1,7 +1,6 @@
 class Account:
-    def __init__(self, account_number: int, name: str, login_pin: str, balance: float):
+    def __init__(self, account_number: int, login_pin: str, balance: float = 1000.0):
         self.account_number = account_number
-        self.name = name
         self.__pin = login_pin
         self.balance = balance
 
@@ -28,3 +27,6 @@ class Account:
 
     def check_pin(self, pin: str):
         return pin == self.__pin
+
+    def __str__(self):
+        return f"{self.account_number} - {self.balance}"
