@@ -1,23 +1,34 @@
-from atm.models.account import Account
+import sqlite3
 
 
 class User:
-    def __init__(self, user_id: str, name: str, role: str = "user"):
-        self.user_id = user_id
-        self.name = name
-        self.role = role  # 'admin' or 'user'
-        self.accounts = {}  # account_number -> Account
+    def __init(self, conn: sqlite3.Connection):
+        self.conn = conn
 
-    def add_account(self, account: Account):
-        if account.account_number in self.accounts:
-            raise ValueError(f"Account already exists for user - {self.name}")
-        self.accounts[account.account_number] = account
+    def create_user(self, user_id: str, name: str, role: str = "user"):
+        try:
+            with self.conn:
+                self.conn.execute(
+                    "INSERT INTO users (user_id, name, role) VALUES (?, ?, ?)",
+                    (user_id, name, role)
+                )
+            print(f"✅ User '{name}' (ID: {user_id}) with role '{role}' created.")
+        except sqlite3.IntegrityError:
+            print("❌ Error: User ID already exists.")
 
-    def get_account(self, acc_no: int):
-        return self.accounts.get(acc_no)
+    # def add_account(self, account: Account):
+    #     if account.account_number in self.accounts:
+    #         raise ValueError(f"Account already exists for user - {self.name}")
+    #     self.accounts[account.account_number] = account
+    #
+    # def get_account(self, acc_no: int):
+    #     return self.accounts.get(acc_no)
 
-    def is_admin(self):
-        return self.role == "admin"
+    def get_user(self, user_id: str):
+        cur = self.conn.cursor()
+        cur.execute("SELECT user_id, name, role FROM users WHERE user_id = ?", (user_id,))
+        return cur.fetchone()  # returns tuple or None
 
-    def __str__(self):
-        return f"{self.user_id} - {self.name}"
+    def is_admin(self, user_id: str):
+        user = self.get_user(user_id)
+        return user and user[2] == 'admin'
