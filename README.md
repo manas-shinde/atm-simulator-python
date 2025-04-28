@@ -13,8 +13,8 @@ A Python-based ATM simulator demonstrating OOP design, exception handling, role-
 ## Branch Ideas
 
 - `main` – Basic OOP + role system
-- `sqlite-version` – Store data in SQLite DB
-- `file-encryption-version` – Store encrypted data in files (with `cryptography` or `fernet`)
+- [`sqlite-version`](https://github.com/manas-shinde/atm-simulator-python/tree/sqlite-version) – Store data in SQLite DB
+- [`file-encryption-version1`](https://github.com/manas-shinde/atm-simulator-python/tree/file-encryption-version1) – Store encrypted data in files (with `cryptography` or `fernet`)
 
 ## Run
 
