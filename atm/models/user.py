@@ -21,3 +21,19 @@ class User:
 
     def __str__(self):
         return f"{self.user_id} - {self.name}"
+
+    def to_dict(self):
+        return {
+            'user_id': self.user_id,
+            'name': self.name,
+            'role': self.role,
+            'accounts': {acc_no: acc.to_dict() for acc_no, acc in self.accounts.items()}
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        user = cls(data['user_id'], data['name'], data['role'])
+        for acc_no, acc_data in data["accounts"].items():
+            user.add_account(Account.from_dict(acc_data))
+
+        return user

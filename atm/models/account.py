@@ -30,3 +30,14 @@ class Account:
 
     def __str__(self):
         return f"{self.account_number} - {self.balance}"
+
+    def to_dict(self):
+        return {
+            'account_number': self.account_number,
+            'pin': self.__pin,
+            'balance': self.balance
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data['account_number'], data['pin'], data['balance'])

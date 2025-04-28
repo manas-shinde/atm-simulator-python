@@ -1,17 +1,29 @@
+import os
 from atm.models import User, Account
+from atm.core.crypto_manager import CryptoManager
 
 
 class ATM:
     def __init__(self):
-        self.users = {}
+        self.crypto = CryptoManager()
+        self.users = self.load_users()
         self.current_user = None
         self.current_account = None
+
+    def load_users(self):
+        data = self.crypto.load_from_file("data/users.dat")
+        return {uid: User.from_dict(udata) for uid, udata in data.items()}
+
+    def save_users(self):
+        data = {uid: user.to_dict() for uid, user in self.users.items()}
+        self.crypto.save_to_file("data/users.dat", data=data)
 
     def details(self):
         print(f"{self.current_account} {self.current_user}")
 
     def add_user(self, user: User):
         self.users[user.user_id] = user
+        self.save_users()
 
     def add_user_interactively(self):
         user_id = input("🆔 Enter new user ID: ")
@@ -45,17 +57,24 @@ class ATM:
             return False
 
     def run(self):
-        while True:
-            user_id = input("🆔 Enter user ID: ")
-            acc_no = int(input("🏦 Enter account number: "))
-            pin = input("🔒 Enter PIN: ")
-            if self.login(user_id, acc_no, pin):
-                self.show_menu()
-                self.logout()
-            else:
-                retry = input("❓ Try again? (y/n): ").lower()
-                if retry != 'y':
+        if not self.users:
+            print("No User found in system. Create a New User and account.")
+            self.add_user_interactively()
+        else:
+            while True:
+                want_to_exit = input("Do you want to exit from system? (y/n):")
+                if want_to_exit.lower() == 'y' or want_to_exit.lower() == 'yes':
                     break
+                user_id = input("🆔 Enter user ID: ")
+                acc_no = int(input("🏦 Enter account number: "))
+                pin = input("🔒 Enter PIN: ")
+                if self.login(user_id, acc_no, pin):
+                    self.show_menu()
+                    self.logout()
+                else:
+                    retry = input("❓ Try again? (y/n): ").lower()
+                    if retry != 'y':
+                        break
 
     def logout(self):
         print(f"\n👋 Goodbye, {self.current_user.name}!\n")
